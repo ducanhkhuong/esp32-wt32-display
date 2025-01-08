@@ -1,0 +1,18 @@
+{
+    "idf.portWin": "COM14",
+    "idf.adapterTargetName": "esp32s3",
+    "idf.openOcdConfigs": [
+        "board/esp32s3-builtin.cfg"
+    ],
+    "files.associations": {
+        "tux_panel.h": "c",
+        "lvgl.h": "c",
+        "lv_img.h": "c",
+        "lv_font_montserrat_14.c": "cpp",
+        "lumi_font_helvetica_14.c": "cpp",
+        "lv_arc.h": "c",
+        "speaker_ns4168.h": "c",
+        "setup.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
