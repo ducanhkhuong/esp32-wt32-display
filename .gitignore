@@ -3,6 +3,9 @@ build-esp32s3/
 build/
 sdkconfig.old
 .vs/
+.vscode
+.devcontainer
 managed_components/
 cp-deploy.cmd
+assets
 
