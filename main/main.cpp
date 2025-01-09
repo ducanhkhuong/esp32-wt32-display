@@ -41,15 +41,15 @@ extern "C" void app_main(void)
 
 
 
-    // Thử nghiệm LVGL
+    // Thử nghiệm LVGL    
     lvgl_acquire();
-    lv_obj_t  *screen = lv_scr_act();
+    lv_obj_t  * screen = lv_scr_act();
     manager = new Manager(screen);
     ESP_LOGE(TAG, "\n%s", manager->device_info().c_str());
     lvgl_release();
 
     //cập nhật dữ liệu từ BLE vào giao diện
-    manager->create_timer(Manager::update_data_callback, 500, manager);
+    manager->create_timer(Manager::update_data_callback, 200, manager);
 }
 
 

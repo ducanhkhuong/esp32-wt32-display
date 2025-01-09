@@ -2,24 +2,39 @@
 #include <lvgl.h>
 #include <string>
 
+static const char *MANAGER = "SHOW-UI";
 
-class Manager {
+class Manager
+{
 private:
-    uint8_t  position_1 ; 
-    uint8_t  position_2 ;
-    uint8_t  position_3 ;
+    uint8_t position_1;
+    uint8_t position_2;
+    uint8_t position_3;
     uint16_t distance_2;
-    uint16_t distance_3; 
+    uint16_t distance_3;
 
-    //check data change
-    uint8_t  last_position_1, last_position_2, last_position_3;
+    // check data change
+    uint8_t last_position_1, last_position_2, last_position_3;
     uint16_t last_distance_2, last_distance_3;
+
+    ImgWidget img1;
+    ImgWidget img2;
+    ImgWidget img3;
+    LabelWidget label_distance2;
+    LabelWidget label_distance3;
 public:
-    Manager(lv_obj_t * scr) : last_position_1(-1), last_position_2(-1), last_position_3(-1), last_distance_2(-1), last_distance_3(-1)
+    Manager(lv_obj_t *scr) : last_position_1(-1),
+                             last_position_2(-1),
+                             last_position_3(-1),
+                             last_distance_2(-1),
+                             last_distance_3(-1),
+                             img1(scr),
+                             img2(scr),
+                             img3(scr)
     {
         lv_obj_set_style_bg_color(scr, lv_color_hex(0x130709), 0);
 
-        ArcWidget  arc(scr, 24, 17, 190, 190, 0, 130, 135, 45, 0);
+        ArcWidget arc(scr, 24, 17, 190, 190, 0, 130, 135, 45, 0);
 
         labels[0] = lv_label_create(scr);
         lv_label_set_text(labels[0], "10");
@@ -155,9 +170,9 @@ public:
         {
             lv_timer_create(show_label, i * 200, (void *)i);
         }
-    }    
-    
-    //show - label
+    }
+
+    // show - label
     static void show_label(lv_timer_t *timer)
     {
         int index = (int)timer->user_data;
@@ -171,8 +186,9 @@ public:
         }
     }
 
-    //update - data to ble
-    void forward_data(uint8_t pos1, uint8_t pos2, uint16_t dist2, uint8_t pos3, uint16_t dist3) {
+    // update - data to ble
+    void forward_data(uint8_t pos1, uint8_t pos2, uint16_t dist2, uint8_t pos3, uint16_t dist3)
+    {
         this->position_1 = pos1;
         this->position_2 = pos2;
         this->distance_2 = dist2;
@@ -180,11 +196,13 @@ public:
         this->distance_3 = dist3;
     }
 
-    //check data change
-        bool has_data_changed() {
+    // check data change
+    bool has_data_changed()
+    {
         bool data_changed = false;
         if (position_1 != last_position_1 || position_2 != last_position_2 ||
-            position_3 != last_position_3 || distance_2 != last_distance_2 || distance_3 != last_distance_3) {
+            position_3 != last_position_3 || distance_2 != last_distance_2 || distance_3 != last_distance_3)
+        {
             data_changed = true;
             last_position_1 = position_1;
             last_position_2 = position_2;
@@ -194,109 +212,362 @@ public:
         }
         return data_changed;
     }
-    
-    //handle logic and ui-ux
-    void ui_show(lv_obj_t * scr){
-        ESP_LOGI("UI_SHOW", "Position 1: %d", position_1);
-        ESP_LOGI("UI_SHOW", "Position 2: %d, Distance: %d", position_2, distance_2);
-        ESP_LOGI("UI_SHOW", "Position 3: %d, Distance: %d", position_3, distance_3);
 
-        // ImgWidget  img3(scr, NULL, 132, 58, 55, 55); //"F:/bg/camera.bin"
-
-        //ưu tiên cao - vị trí 1
-        ImgWidget img1;//(scr,NULL, 78, 140, 80, 80);
-        ImgWidget img2;
+    // handle logic and ui-ux
+    void ui_show(lv_obj_t *scr)
+    {
+        ESP_LOGI(MANAGER, "Position 1: %d", position_1);
+        ESP_LOGI(MANAGER, "Position 2: %d, Distance: %d", position_2, distance_2);
+        ESP_LOGI(MANAGER, "Position 3: %d, Distance: %d", position_3, distance_3);
 
         switch (position_1)
         {
-            case ID_SPEED_LIMIT_0 :
-                img1.imgWidget(scr,NULL, 78, 140, 80, 80);
+        case ID_NOTHING:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
             break;
 
-            case ID_SPEED_LIMIT_40 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo40.bin", 78, 140, 80, 80);
-            break;
-            
-            case ID_SPEED_LIMIT_50 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo50.bin", 78, 140, 80, 80);
-            break;
-            
-            case ID_SPEED_LIMIT_60 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo60.bin", 78, 140, 80, 80);
+        case ID_SPEED_LIMIT_40:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo40.bin", 78, 140, 80, 80);
             break;
 
-            case ID_SPEED_LIMIT_70 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo70.bin", 78, 140, 80, 80);
-            break;    
+        case ID_SPEED_LIMIT_50:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo50.bin", 78, 140, 80, 80);
+            break;
 
-            case ID_SPEED_LIMIT_80 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo80.bin", 78, 140, 80, 80);
-            break;    
+        case ID_SPEED_LIMIT_60:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo60.bin", 78, 140, 80, 80);
+            break;
 
-            case ID_SPEED_LIMIT_90 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo90.bin", 78, 140, 80, 80);
-            break;    
+        case ID_SPEED_LIMIT_70:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo70.bin", 78, 140, 80, 80);
+            break;
 
-            case ID_SPEED_LIMIT_100 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo100.bin", 78, 140, 80, 80);
-            break;    
+        case ID_SPEED_LIMIT_80:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo80.bin", 78, 140, 80, 80);
+            break;
 
-            case ID_SPEED_LIMIT_120 :
-                img1.imgWidget(scr,"F:/80x80/gioihantocdo120.bin", 78, 140, 80, 80);
-            break;    
+        case ID_SPEED_LIMIT_90:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo90.bin", 78, 140, 80, 80);
+            break;
 
-            default:
-                img1.imgWidget(scr,NULL, 78, 140, 80, 80);
-                ESP_LOGE("UI_SHOW", "position_1 : not data");
+        case ID_SPEED_LIMIT_100:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo100.bin", 78, 140, 80, 80);
+            break;
+
+        case ID_SPEED_LIMIT_120:
+            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            img1.imgWidget(scr, "F:/80x80/gioihantocdo120.bin", 78, 140, 80, 80);
+            break;
+
+        default:
+            ESP_LOGE(MANAGER, "position 1 - INVALID DATA");
             break;
         };
 
 
-        //vị trí 2
+
+
+
+
         switch (position_2)
         {
-        case ID_SPEED_LIMIT_0 :
-            img2.imgWidget(scr, NULL, 50, 58, 55, 55);
-        break;  
+        case ID_NOTHING:
+            img2.imgWidget(scr, "F:/55x55/nothing.bin", 53, 58, 55, 55);
+            break;
 
-        case ID_SPEED_LIMIT_40 :
-            img2.imgWidget(scr,"F:/55x55/gioihantocdo40_55.bin",50,58,55,55);
-        break;
+        case ID_SPEED_LIMIT_40:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/4.bin", 53, 58, 55, 55);
+            break;
 
-        case ID_SPEED_LIMIT_50 :
-            img2.imgWidget(scr,"F:/55x55/gioihantocdo50_55.bin",50,58,55,55);
-        break;
-        
-        default :
-            img2.imgWidget(scr, NULL, 50, 58, 55, 55);
-            ESP_LOGE("UI_SHOW", "position_2 : not data");
-        break;
+        case ID_SPEED_LIMIT_50:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/5.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_60:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/6.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_70:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/7.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_80:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/8.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_90:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/9.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_100:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/10.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_SPEED_LIMIT_120:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/11.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_TS_ENTER_URBAN_AREA:
+            img2.imgWidget(scr, NULL, 58, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/12.bin", 58, 58, 55, 45);
+            break;
+
+        case ID_TS_EXIT_URBAN_AREA:
+            img2.imgWidget(scr, NULL, 58, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/13.bin", 58, 58, 55, 45);
+            break;
+
+        case ID_TS_NO_OVER_TAKING_ZONE:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/14.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_TS_END_OF_NO_OVER_TAKING_ZONE:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/15.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_TS_SLOW_DOWN_ZONE:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/16.bin", 58, 58, 55, 55);
+            break;
+
+        case ID_TS_REST_STATIOMN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/17.bin", 58, 58, 55, 55);
+            break;
+
+        case ID_TS_TOLL_STATION:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/18.bin", 58, 58, 55, 55);
+            break;
+
+        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/19.bin", 58, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_LEFT_TURN_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/21.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_RIGHT_TURN_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/22.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_LEFT_TURN_AND_UTURN_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/23.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_RIGHT_TURN_AND_UTURN_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/24.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_STRAIGHT_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/27.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/28.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_STOP_AND_PARKING_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/29.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_ON_ODD_DAYS_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/30.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_ON_EVENT_DAYS_SIGN:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/31.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_TRAFFIC_CAMERA:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_PENALTY_CAMERA:
+            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
+            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            break;
+
+        default:
+            ESP_LOGE(MANAGER, "position 2 - INVALID DATA");
+            break;
         }
 
 
-        //ưu tiên vị trí 3 
+        switch (position_3)
+        {
+        case ID_NOTHING:
+            img3.imgWidget(scr, "F:/55x55/nothing.bin", 130, 58, 55, 55);
+            break;
 
+        case ID_TS_ENTER_URBAN_AREA:
+            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/12.bin", 127, 58, 55, 45);
+            break;
+
+        case ID_TS_EXIT_URBAN_AREA:
+            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/13.bin", 127, 58, 55, 45);
+            break;
+
+        case ID_TS_NO_OVER_TAKING_ZONE:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/14.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_TS_END_OF_NO_OVER_TAKING_ZONE:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/15.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_TS_SLOW_DOWN_ZONE:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/16.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_TS_REST_STATIOMN:
+            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/17.bin", 127, 58, 55, 55);
+            break;
+
+        case ID_TS_TOLL_STATION:
+            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/18.bin", 127, 58, 55, 55);
+            break;
+
+        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/19.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_LEFT_TURN_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/21.bin", 130, 58, 55, 55); 
+            break;
+
+        case ID_OTS_NO_RIGHT_TURN_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/22.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_LEFT_TURN_AND_UTURN_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/23.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_RIGHT_TURN_AND_UTURN_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/24.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_STRAIGHT_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/27.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/28.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_STOP_AND_PARKING_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/29.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_ON_ODD_DAYS_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/30.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_PARKING_ON_EVENT_DAYS_SIGN:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/31.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_TRAFFIC_CAMERA:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_PENALTY_CAMERA:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
+            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
+            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            break;
+
+        default:
+            ESP_LOGE(MANAGER, "position 3 - INVALID DATA");
+            break;
+        }
+
+
+        //distance_2
+        label_distance2.updateLabel(scr,distance_2,70,90,50,50,lv_color_white(),&lv_font_montserrat_16);
+        //distance_3
+        label_distance3.updateLabel(scr,distance_3,70,140,50,50,lv_color_white(),&lv_font_montserrat_16);
     }
 
-    //callback data
-    static void update_data_callback(lv_timer_t * timer)
+    // callback data
+    static void update_data_callback(lv_timer_t *timer)
     {
         Manager *manager = (Manager *)timer->user_data;
-        if (manager) {
-            if (manager->has_data_changed()) {
+        if (manager)
+        {
+            if (manager->has_data_changed())
+            {
                 manager->ui_show(lv_scr_act());
             }
         }
     }
 
-    //config-timer
+    // config-timer
     void create_timer(lv_timer_cb_t callback, uint32_t delay, void *user_data)
     {
         lv_timer_create(callback, delay, user_data);
     }
 
-    //device - information
-    string device_info(){
+    // device - information
+    string device_info()
+    {
         std::string s_chip_info = "";
         esp_chip_info_t chip_info;
         uint32_t flash_size;
@@ -325,15 +596,14 @@ public:
         if (esp_flash_get_size(NULL, &flash_size) == ESP_OK)
         {
             s_chip_info += fmt::format("Flash Size   : {}MB {}\n", flash_size / (1024 * 1024),
-                                    (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "[embedded]" : "[external]");
+                                       (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "[embedded]" : "[external]");
         }
         s_chip_info += fmt::format("PSRAM Size   : {}MB {}\n", static_cast<int>(round(psramsize)),
-                                (chip_info.features & CHIP_FEATURE_EMB_PSRAM) ? "[embedded]" : "[external]");
+                                   (chip_info.features & CHIP_FEATURE_EMB_PSRAM) ? "[embedded]" : "[external]");
 
         s_chip_info += fmt::format("Connectivity : {}{}{}\n", (chip_info.features & CHIP_FEATURE_WIFI_BGN) ? "2.4GHz WIFI" : "NA",
-                                (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
-                                (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
+                                   (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
+                                   (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
         return s_chip_info;
     }
 };
-
