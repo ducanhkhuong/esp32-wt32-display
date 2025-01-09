@@ -539,11 +539,8 @@ public:
             break;
         }
 
-
-        //distance_2
-        label_distance2.updateLabel(scr,distance_2,70,90,50,50,lv_color_white(),&lv_font_montserrat_16);
-        //distance_3
-        label_distance3.updateLabel(scr,distance_3,70,140,50,50,lv_color_white(),&lv_font_montserrat_16);
+        label_distance2.updateLabel(scr,distance_2,20,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance3.updateLabel(scr,distance_3,140,115,110,110,lv_color_white(),&lv_font_montserrat_16);
     }
 
     // callback data

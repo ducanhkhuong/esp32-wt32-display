@@ -79,5 +79,6 @@ extern "C" void app_main(void)
 
     //cập nhật dữ liệu từ BLE vào giao diện
     manager->create_timer(Manager::update_data_callback, 500, manager);
+    
     xTaskCreate((TaskFunction_t)sound_task,"Sound task",4096,NULL,1,NULL);
 }

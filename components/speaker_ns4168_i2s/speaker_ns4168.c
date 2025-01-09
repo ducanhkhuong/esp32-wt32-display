@@ -46,7 +46,7 @@ static esp_err_t bsp_i2s_write(void *audio_buffer, size_t len, size_t *bytes_wri
     // Giảm âm lượng
     int16_t *pcm_buffer = (int16_t *)audio_buffer; // Giả sử dữ liệu là PCM 16-bit
     size_t sample_count = len / sizeof(int16_t);
-    const float volume_scale = 0.3; // Giảm âm lượng xuống 50%
+    const float volume_scale = 0.2; // Giảm âm lượng xuống 50%
 
     for (size_t i = 0; i < sample_count; i++)
     {
@@ -200,7 +200,7 @@ void read_and_play_mp3_file(const char *filename)
     ESP_LOGI(TAG, "Playing audio...");
 
     // // Delay for playback duration (adjust as necessary)
-    vTaskDelay(pdMS_TO_TICKS(5500)); // Example: 16 seconds
+    vTaskDelay(pdMS_TO_TICKS(3000)); // Example: 16 seconds
 
     ESP_LOGI(TAG, "Playback finished");
     ESP_LOGI(TAG, "File closed");

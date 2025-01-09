@@ -19,7 +19,7 @@ public:
                 label = lv_label_create(parent);
                 lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP);
             }
-            lv_label_set_text_fmt(label, "%dm", value);
+            lv_label_set_text_fmt(label, "%d m", value);
             lv_obj_set_pos(label, x, y);
             lv_obj_set_size(label, width, height);
             lv_obj_set_style_text_color(label, color, 0);
