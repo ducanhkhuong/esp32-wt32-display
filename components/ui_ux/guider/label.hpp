@@ -22,9 +22,9 @@ public:
             lv_label_set_text_fmt(label, "%dm", value);
             lv_obj_set_pos(label, x, y);
             lv_obj_set_size(label, width, height);
-            lv_obj_set_style_text_color(label, color, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_font(label, font, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(label, color, 0);
+            lv_obj_set_style_text_font(label, font, 0);
+            lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
         }
     }
 
@@ -42,7 +42,7 @@ public:
 
     void setColor(lv_color_t newColor) {
         if (label) {
-            lv_obj_set_style_text_color(label, newColor, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(label, newColor, 0);
         }
     }
 

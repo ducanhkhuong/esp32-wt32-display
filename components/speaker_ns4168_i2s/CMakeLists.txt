@@ -1,5 +1,5 @@
 
-set(pre_req driver unity chmorgan__esp-audio-player spiffs)
+set(pre_req driver unity chmorgan__esp-audio-player spiffs utils)
 
 idf_component_register(
     SRCS "speaker_ns4168.c" "sound.c"
