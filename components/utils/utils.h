@@ -49,6 +49,9 @@
 #define ID_PENALTY_CAMERA 0x21
 #define ID_RED_LIGHT_SURVEILLANCE_CAMERA 0x23
 
+#define CENSOR_BEEP 0x100
+#define OVER_LMIT_SPEED 0x101
+
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
 
 typedef struct

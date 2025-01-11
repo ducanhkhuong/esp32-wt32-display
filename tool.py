@@ -8,7 +8,9 @@ import time
 esp32 = serial.Serial(port='COM4', baudrate=115200, timeout=1)
 
 def send_to_esp32():
-    """Gửi request đến web server và chuyển phản hồi dưới dạng hex bytes xuống ESP32 mỗi 1 giây"""
+    """Gửi request đến web server và chuyển phản hồi dưới dạng hex bytes xuống ESP32 mỗi 300 ms nếu dữ liệu thay đổi."""
+    previous_response = None  # Biến lưu trữ dữ liệu đã nhận lần trước
+
     while True:
         try:
             # Gửi request GET đến web server local
@@ -17,15 +19,22 @@ def send_to_esp32():
             
             if response.status_code == 200:
                 server_response = response.text.strip()  # Loại bỏ khoảng trắng hoặc ký tự xuống dòng
-                print(f"Server Response: {server_response}")
-
-                # Chuyển chuỗi nhận được thành hex bytes
-                hex_data = bytes.fromhex(server_response)
-                # print(f"Hex Data to ESP32: {hex_data}")
-
-                # Gửi hex bytes xuống ESP32 qua UART
-                esp32.write(hex_data)
-                # print(f"Sent to ESP32: {hex_data}")
+                
+                # Chỉ gửi dữ liệu nếu khác với dữ liệu lần trước
+                if server_response != previous_response:
+                    print(f"Server Response: {server_response}")
+                    
+                    # Chuyển chuỗi nhận được thành hex bytes
+                    hex_data = bytes.fromhex(server_response)
+                    
+                    # Gửi hex bytes xuống ESP32 qua UART
+                    esp32.write(hex_data)
+                    print(f"Sent to ESP32: {hex_data}")
+                    
+                    # Cập nhật dữ liệu đã nhận lần trước
+                    previous_response = server_response
+                else:
+                    print("No change in data, not sending to ESP32.")
             else:
                 print(f"Server Error: {response.status_code}")
         except requests.exceptions.RequestException as e:
@@ -33,8 +42,9 @@ def send_to_esp32():
         except ValueError as e:
             print(f"Invalid Hex Data: {e}")
         
-        # Đợi 1 giây trước khi gửi lại request
-        time.sleep(1)
+        # Đợi 300 ms trước khi gửi lại request
+        time.sleep(0.3)
+        
 
 def read_from_esp32():
     """Liên tục đọc dữ liệu từ ESP32 và hiển thị trên terminal"""

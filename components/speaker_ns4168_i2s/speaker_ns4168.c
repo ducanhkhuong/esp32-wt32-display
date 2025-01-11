@@ -82,7 +82,8 @@ static esp_err_t bsp_audio_init(const i2s_std_config_t *i2s_config, i2s_chan_han
 {
     /* Setup I2S peripheral */
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(CONFIG_BSP_I2S_NUM, I2S_ROLE_MASTER);
-    chan_cfg.auto_clear = true; // Auto clear the legacy data in the DMA buffer
+    chan_cfg.auto_clear = false; // Auto clear the legacy data in the DMA buffer
+    chan_cfg.dma_frame_num = 512;
     ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, tx_channel, rx_channel));
 
     /* Setup I2S channels */
@@ -127,6 +128,7 @@ void speaker_config(void)
         .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(44100),
         .slot_cfg = I2S_STD_PHILIP_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = BSP_I2S_GPIO_CFG,
+        
     };
 
     esp_err_t ret = bsp_audio_init(&std_cfg, &i2s_tx_chan, &i2s_rx_chan);
@@ -140,8 +142,8 @@ void speaker_config(void)
         .mute_fn = audio_mute_function,
         .write_fn = bsp_i2s_write,
         .clk_set_fn = bsp_i2s_reconfig_clk,
-        .priority = 0,
-        .coreID = 0};
+        .priority = 3,
+        .coreID = 1};
 
     ret = audio_player_new(config);
     if (ret != ESP_OK)
@@ -178,7 +180,7 @@ void init_sound_spiffs(void)
     }
 }
 
-void read_and_play_mp3_file(const char *filename)
+void read_and_play_mp3_file(const char *filename, int delay_ms)
 {
     esp_err_t ret;
     FILE *file = fopen(filename, "rb");
@@ -200,7 +202,7 @@ void read_and_play_mp3_file(const char *filename)
     ESP_LOGI(TAG, "Playing audio...");
 
     // // Delay for playback duration (adjust as necessary)
-    vTaskDelay(pdMS_TO_TICKS(3000)); // Example: 16 seconds
+    vTaskDelay(pdMS_TO_TICKS(delay_ms)); // Example: 16 seconds
 
     ESP_LOGI(TAG, "Playback finished");
     ESP_LOGI(TAG, "File closed");

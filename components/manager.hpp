@@ -358,8 +358,8 @@ public:
             break;
 
         case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/19.bin", 58, 58, 55, 55);
+            img2.imgWidget(scr, NULL, 53, 58, 55, 60);
+            img2.imgWidget(scr, "F:/55x55/19.bin", 58, 58, 55, 60);
             break;
 
         case ID_OTS_NO_LEFT_TURN_SIGN:
@@ -470,8 +470,8 @@ public:
             break;
 
         case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/19.bin", 130, 58, 55, 55);
+            img3.imgWidget(scr, NULL, 130, 58, 55, 60);
+            img3.imgWidget(scr, "F:/55x55/19.bin", 130, 58, 55, 60);
             break;
 
         case ID_OTS_NO_LEFT_TURN_SIGN:
@@ -539,8 +539,8 @@ public:
             break;
         }
 
-        label_distance2.updateLabel(scr,distance_2,20,115,110,110,lv_color_white(),&lv_font_montserrat_16);
-        label_distance3.updateLabel(scr,distance_3,140,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance2.updateLabel(scr,distance_2,28,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance3.updateLabel(scr,distance_3,110,115,110,110,lv_color_white(),&lv_font_montserrat_16);
     }
 
     // callback data
