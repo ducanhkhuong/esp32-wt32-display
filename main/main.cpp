@@ -32,6 +32,31 @@ void ble_recv_cb(uint8_t *data, uint16_t len) {
     }
 }
 
+void ble_connect_event_cb(int event_id){
+    bool connect_b = false;
+    switch (event_id)
+    {
+    case CONNECT_EVENT:
+    {
+        ESP_LOGI(TAG, "DEVICE CONNECTED");
+        connect_b = true;
+    }
+    break;
+
+    case DISCONNECT_EVENT:
+    {
+         ESP_LOGI(TAG, "DEVICE DISCONNECTED");
+         connect_b = false;
+    }
+    break;
+    
+    default:
+        ESP_LOGE(TAG, "Unknown event id - ble connect event");
+        break;
+    }
+}
+
+
 void sound_task(void *param){
     sign_display_on_watch_t receive_data = {0};
     ESP_LOGI(TAG, "Task start");
@@ -69,6 +94,7 @@ extern "C" void app_main(void)
     queue_handle = xQueueCreate(1, sizeof(sign_display_on_watch_t));
     BLE_SERVER_INIT();
     ble_callback_register_callback(ble_recv_cb);
+    ble_connect_event_register_callback(ble_connect_event_cb);
     lcd.init();
     lcd.initDMA();
     lv_init();

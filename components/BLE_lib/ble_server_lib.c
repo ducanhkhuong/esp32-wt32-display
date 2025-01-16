@@ -38,6 +38,7 @@
 #define NAME "NODE"
 
 ble_recv_callback_handle_t ble_recv_callback_handle;
+ble_connect_callback_handle_t ble_connect_callback_handle;
 
 /// Declare the static function
 static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
@@ -416,8 +417,8 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, conn_id %d, trans_id %u, handle %d", param->write.conn_id, param->write.trans_id, param->write.handle);
         if (!param->write.is_prep)
         {
-            //ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, value len %d, value :", param->write.len);
-            //ESP_LOG_BUFFER_HEX(GATTS_TAG, param->write.value, param->write.len);
+            // ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, value len %d, value :", param->write.len);
+            // ESP_LOG_BUFFER_HEX(GATTS_TAG, param->write.value, param->write.len);
             ble_recv_callback_handle(param->write.value, param->write.len);
             example_write_event_env(gatts_if, &a_prepare_write_env, param);
         }
@@ -510,11 +511,13 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         gl_profile_tab[PROFILE_A_APP_ID].conn_id = param->connect.conn_id;
         // start sent the update connection parameters to the peer device.
         esp_ble_gap_update_conn_params(&conn_params);
+        ble_connect_callback_handle(CONNECT_EVENT);
         break;
     }
     case ESP_GATTS_DISCONNECT_EVT:
         ESP_LOGI(GATTS_TAG, "ESP_GATTS_DISCONNECT_EVT, disconnect reason 0x%x", param->disconnect.reason);
         esp_ble_gap_start_advertising(&adv_params);
+        ble_connect_callback_handle(DISCONNECT_EVENT);
         break;
     case ESP_GATTS_CONF_EVT:
         //  ESP_LOGI(GATTS_TAG, "ESP_GATTS_CONF_EVT, status %d attr_handle %d", param->conf.status, param->conf.handle);
@@ -647,4 +650,9 @@ void ble_disable(void)
 void ble_callback_register_callback(ble_recv_callback_handle_t cb)
 {
     ble_recv_callback_handle = cb;
+}
+
+void ble_connect_event_register_callback(ble_connect_callback_handle_t cb)
+{
+    ble_connect_callback_handle = cb;
 }
