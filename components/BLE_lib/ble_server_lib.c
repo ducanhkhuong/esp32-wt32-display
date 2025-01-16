@@ -416,8 +416,8 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, conn_id %d, trans_id %u, handle %d", param->write.conn_id, param->write.trans_id, param->write.handle);
         if (!param->write.is_prep)
         {
-            ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, value len %d, value :", param->write.len);
-            ESP_LOG_BUFFER_HEX(GATTS_TAG, param->write.value, param->write.len);
+            //ESP_LOGI(GATTS_TAG, "GATT_WRITE_EVT, value len %d, value :", param->write.len);
+            //ESP_LOG_BUFFER_HEX(GATTS_TAG, param->write.value, param->write.len);
             ble_recv_callback_handle(param->write.value, param->write.len);
             example_write_event_env(gatts_if, &a_prepare_write_env, param);
         }

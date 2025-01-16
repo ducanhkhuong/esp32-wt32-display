@@ -26,5 +26,5 @@ message(STATUS "CONFIG_LV_CONF_SKIP = ${CONFIG_LV_CONF_SKIP}")
 message(STATUS "---------------------------------------")
 message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 message(STATUS "CMAKE_BINARY_DIR = ${CMAKE_BINARY_DIR}")
-message(STATUS "---------By ducanhkhuong---------")
+message(STATUS "---------By lumi lab---------")
 

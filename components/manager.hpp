@@ -2,26 +2,31 @@
 #include <lvgl.h>
 #include <string>
 
-static const char *MANAGER = "SHOW-UI";
-
 class Manager
 {
 private:
+    //data widget 
     uint8_t position_1;
     uint8_t position_2;
     uint8_t position_3;
     uint16_t distance_2;
     uint16_t distance_3;
 
-    // check data change
+    //check data change
     uint8_t last_position_1, last_position_2, last_position_3;
     uint16_t last_distance_2, last_distance_3;
 
+    //obj 
     ImgWidget img1;
     ImgWidget img2;
     ImgWidget img3;
     LabelWidget label_distance2;
     LabelWidget label_distance3;
+    ArcWidget arc;
+
+    //data speed 
+    uint8_t speed;
+    
 public:
     Manager(lv_obj_t *scr) : last_position_1(-1),
                              last_position_2(-1),
@@ -30,11 +35,12 @@ public:
                              last_distance_3(-1),
                              img1(scr),
                              img2(scr),
-                             img3(scr)
+                             img3(scr),
+                             speed(0)
     {
         lv_obj_set_style_bg_color(scr, lv_color_hex(0x130709), 0);
 
-        ArcWidget arc(scr, 24, 17, 190, 190, 0, 130, 135, 45, 0);
+        arc.Widget(scr,24,17,190, 190, 0, 130, 135, 45, 0);
 
         labels[0] = lv_label_create(scr);
         lv_label_set_text(labels[0], "10");
@@ -172,6 +178,10 @@ public:
         }
     }
 
+    ~Manager(){
+        ESP_LOGE(TAG,"delete manager");
+    }
+
     // show - label
     static void show_label(lv_timer_t *timer)
     {
@@ -186,8 +196,8 @@ public:
         }
     }
 
-    // update - data to ble
-    void forward_data(uint8_t pos1, uint8_t pos2, uint16_t dist2, uint8_t pos3, uint16_t dist3)
+    // update - data widget to ble
+    void forward_data_widget(uint8_t pos1, uint8_t pos2, uint16_t dist2, uint8_t pos3, uint16_t dist3)
     {
         this->position_1 = pos1;
         this->position_2 = pos2;
@@ -213,217 +223,259 @@ public:
         return data_changed;
     }
 
+
+    //update - data speed to ble
+    void forward_data_speed(uint8_t value)
+    {
+        this->speed = value;
+    }
+
+
+
     // handle logic and ui-ux
     void ui_show(lv_obj_t *scr)
     {
-        ESP_LOGI(MANAGER, "Position 1: %d", position_1);
-        ESP_LOGI(MANAGER, "Position 2: %d, Distance: %d", position_2, distance_2);
-        ESP_LOGI(MANAGER, "Position 3: %d, Distance: %d", position_3, distance_3);
+        //ESP_LOGI(TAG, "Position 1: %d", position_1);
+        //ESP_LOGI(TAG, "Position 2: %d, Distance: %d", position_2, distance_2);
+        //ESP_LOGI(TAG, "Position 3: %d, Distance: %d", position_3, distance_3);
 
         switch (position_1)
         {
         case ID_NOTHING:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
             break;
 
         case ID_SPEED_LIMIT_40:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo40.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo40.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_50:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo50.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo50.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_60:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo60.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo60.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_70:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo70.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo70.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_80:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo80.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo80.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_90:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo90.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo90.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_100:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo100.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo100.bin", 78, 140, 80, 80);
             break;
 
         case ID_SPEED_LIMIT_120:
-            img1.imgWidget(scr, NULL, 78, 140, 80, 80);
-            img1.imgWidget(scr, "F:/80x80/gioihantocdo120.bin", 78, 140, 80, 80);
+            //img1.imgUpdate(scr, NULL, 78, 140, 80, 80);
+            img1.imgDelete();
+            img1.imgUpdate(scr, "F:/80x80/gioihantocdo120.bin", 78, 140, 80, 80);
             break;
 
         default:
-            ESP_LOGE(MANAGER, "position 1 - INVALID DATA");
+            ESP_LOGE(TAG, "position 1 - INVALID DATA");
             break;
         };
-
-
-
-
-
 
         switch (position_2)
         {
         case ID_NOTHING:
-            img2.imgWidget(scr, "F:/55x55/nothing.bin", 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/nothing.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_40:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/4.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/4.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_50:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/5.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/5.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_60:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/6.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/6.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_70:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/7.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/7.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_80:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/8.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/8.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_90:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/9.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/9.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_100:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/10.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/10.bin", 53, 58, 55, 55);
             break;
 
         case ID_SPEED_LIMIT_120:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/11.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/11.bin", 53, 58, 55, 55);
             break;
 
         case ID_TS_ENTER_URBAN_AREA:
-            img2.imgWidget(scr, NULL, 58, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/12.bin", 58, 58, 55, 45);
+            //img2.imgUpdate(scr, NULL, 58, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/12.bin", 58, 58, 55, 45);
             break;
 
         case ID_TS_EXIT_URBAN_AREA:
-            img2.imgWidget(scr, NULL, 58, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/13.bin", 58, 58, 55, 45);
+            //img2.imgUpdate(scr, NULL, 58, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/13.bin", 58, 58, 55, 45);
             break;
 
         case ID_TS_NO_OVER_TAKING_ZONE:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/14.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/14.bin", 53, 58, 55, 55);
             break;
 
         case ID_TS_END_OF_NO_OVER_TAKING_ZONE:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/15.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/15.bin", 53, 58, 55, 55);
             break;
 
         case ID_TS_SLOW_DOWN_ZONE:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/16.bin", 58, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/16.bin", 58, 58, 55, 55);
             break;
 
         case ID_TS_REST_STATIOMN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/17.bin", 58, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/17.bin", 58, 58, 55, 55);
             break;
 
         case ID_TS_TOLL_STATION:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/18.bin", 58, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/18.bin", 58, 58, 55, 55);
             break;
 
-        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 60);
-            img2.imgWidget(scr, "F:/55x55/19.bin", 58, 58, 55, 60);
+        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN :
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 60);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/19.bin", 58, 58, 55, 60);
             break;
 
         case ID_OTS_NO_LEFT_TURN_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/21.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/21.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_RIGHT_TURN_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/22.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/22.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_LEFT_TURN_AND_UTURN_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/23.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/23.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_RIGHT_TURN_AND_UTURN_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/24.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/24.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_STRAIGHT_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/27.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/27.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/28.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/28.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_STOP_AND_PARKING_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/29.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/29.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_ON_ODD_DAYS_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/30.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/30.bin", 53, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_ON_EVENT_DAYS_SIGN:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/31.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/31.bin", 53, 58, 55, 55);
             break;
 
         case ID_TRAFFIC_CAMERA:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
             break;
 
         case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
             break;
 
         case ID_PENALTY_CAMERA:
-            img2.imgWidget(scr, NULL, 53, 58, 55, 55);
-            img2.imgWidget(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
             break;
 
         default:
-            ESP_LOGE(MANAGER, "position 2 - INVALID DATA");
+            ESP_LOGE(TAG, "position 2 - INVALID DATA");
             break;
         }
 
@@ -431,120 +483,147 @@ public:
         switch (position_3)
         {
         case ID_NOTHING:
-            img3.imgWidget(scr, "F:/55x55/nothing.bin", 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/nothing.bin", 130, 58, 55, 55);
             break;
 
         case ID_TS_ENTER_URBAN_AREA:
-            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/12.bin", 127, 58, 55, 45);
+            //img3.imgUpdate(scr, NULL, 127, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/12.bin", 127, 58, 55, 45);
             break;
 
         case ID_TS_EXIT_URBAN_AREA:
-            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/13.bin", 127, 58, 55, 45);
+            //img3.imgUpdate(scr, NULL, 127, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/13.bin", 127, 58, 55, 45);
             break;
 
         case ID_TS_NO_OVER_TAKING_ZONE:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/14.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/14.bin", 130, 58, 55, 55);
             break;
 
         case ID_TS_END_OF_NO_OVER_TAKING_ZONE:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/15.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/15.bin", 130, 58, 55, 55);
             break;
 
         case ID_TS_SLOW_DOWN_ZONE:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/16.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/16.bin", 130, 58, 55, 55);
             break;
 
         case ID_TS_REST_STATIOMN:
-            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/17.bin", 127, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 127, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/17.bin", 127, 58, 55, 55);
             break;
 
         case ID_TS_TOLL_STATION:
-            img3.imgWidget(scr, NULL, 127, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/18.bin", 127, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 127, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/18.bin", 127, 58, 55, 55);
             break;
 
-        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 60);
-            img3.imgWidget(scr, "F:/55x55/19.bin", 130, 58, 55, 60);
+        case ID_TS_CROSSING_RAILING_WITHOUT_BARRIER_SIGN :
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 60);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/19.bin", 130, 58, 55, 60);
             break;
 
         case ID_OTS_NO_LEFT_TURN_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/21.bin", 130, 58, 55, 55); 
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/21.bin", 130, 58, 55, 55); 
             break;
 
         case ID_OTS_NO_RIGHT_TURN_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/22.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/22.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_LEFT_TURN_AND_UTURN_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/23.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/23.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_RIGHT_TURN_AND_UTURN_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/24.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/24.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_STRAIGHT_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/27.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/27.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/28.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/28.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_STOP_AND_PARKING_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/29.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/29.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_ON_ODD_DAYS_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/30.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/30.bin", 130, 58, 55, 55);
             break;
 
         case ID_OTS_NO_PARKING_ON_EVENT_DAYS_SIGN:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/31.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/31.bin", 130, 58, 55, 55);
             break;
 
         case ID_TRAFFIC_CAMERA:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
             break;
 
         case ID_PENALTY_CAMERA:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
             break;
 
         case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
-            img3.imgWidget(scr, NULL, 130, 58, 55, 55);
-            img3.imgWidget(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
             break;
 
         default:
-            ESP_LOGE(MANAGER, "position 3 - INVALID DATA");
+            ESP_LOGE(TAG, "position 3 - INVALID DATA");
             break;
         }
 
-        label_distance2.updateLabel(scr,distance_2,28,115,110,110,lv_color_white(),&lv_font_montserrat_16);
-        label_distance3.updateLabel(scr,distance_3,110,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance2.labelUpdate(scr,distance_2,28,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance3.labelUpdate(scr,distance_3,110,115,110,110,lv_color_white(),&lv_font_montserrat_16);
     }
 
-    // callback data
-    static void update_data_callback(lv_timer_t *timer)
+    // handle logic speed
+    void speed_show()
+    {
+        arc.arcUpdate(speed,position_1);
+    }
+
+    // callback data widget
+    static void update_data_widget_callback(lv_timer_t *timer)
     {
         Manager *manager = (Manager *)timer->user_data;
         if (manager)
@@ -554,6 +633,17 @@ public:
                 manager->ui_show(lv_scr_act());
             }
         }
+        //delete manager;
+    }
+
+    //callback data speed
+    static void update_data_speed_callback(lv_timer_t *timer){
+        Manager *manager = (Manager *)timer->user_data;
+        if (manager)
+        {
+            manager->speed_show();
+        }
+        //delete manager;
     }
 
     // config-timer

@@ -8,7 +8,11 @@ private:
 public:
     LabelWidget() : label(nullptr) {}
 
-    void updateLabel(lv_obj_t *parent, int16_t value, lv_coord_t x, lv_coord_t y, lv_coord_t width, lv_coord_t height, lv_color_t color, const lv_font_t *font) {
+    void Widget(){
+        ;
+    }
+
+    void labelUpdate(lv_obj_t *parent, int16_t value, lv_coord_t x, lv_coord_t y, lv_coord_t width, lv_coord_t height, lv_color_t color, const lv_font_t *font) {
         if (value <= 0 || value > 300) {
             if (label != nullptr) {
                 lv_obj_del(label);
