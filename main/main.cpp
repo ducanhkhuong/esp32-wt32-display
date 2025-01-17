@@ -1,7 +1,7 @@
 #include "manager.hpp"
 
 Manager *manager = nullptr;
-QueueHandle_t queue_sign_display_handle;
+QueueHandle_t queue_speed_sound_handle;
 QueueHandle_t queue_sign_data_handle;
 last_sign_display_t last_display = {0};
 sign_display_on_watch_t receive_data = {0};
@@ -11,9 +11,11 @@ void sound_task(void *param)
 {
     sign_data_t sign_data_queue = {0};
     ESP_LOGI(TAG, "Task start");
+    bool is_playing = false;
+    uint8_t current_speed = 0;
     while (1)
     {
-        if (xQueueReceive(queue_sign_data_handle, &sign_data_queue, portMAX_DELAY) == pdPASS)
+        if (xQueueReceive(queue_sign_data_handle, &sign_data_queue, 1000 / portTICK_PERIOD_MS) == pdPASS)
         {
             receive_data = get_sign_display_on_watch(sign_data_queue);
             if (manager)
@@ -293,9 +295,29 @@ void sound_task(void *param)
                     break;
                 }
             }
+            if (receive_data.position_1 == ID_SPEED_LIMIT_120)
+            {
+                if (current_speed > 120)
+                {
+                    play_sound_id(CENSOR_BEEP);
+                    play_sound_id(OVER_LMIT_SPEED);
+                }
+            }
+            else
+            {
+                if (current_speed > receive_data.position_1 * 10)
+                {
+                    play_sound_id(CENSOR_BEEP);
+                    play_sound_id(OVER_LMIT_SPEED);
+                }
+            }
+            current_speed = 0;
             last_display.last_position_1 = receive_data.position_1;
             last_display.last_position_2 = receive_data.position_2;
             last_display.last_position_3 = receive_data.position_3;
+        }
+        else if (xQueueReceive(queue_speed_sound_handle, &current_speed, 10 / portTICK_PERIOD_MS) == pdPASS)
+        {
         }
     }
 }
@@ -307,6 +329,10 @@ void ble_recv_cb(uint8_t *data, uint16_t len)
         if (manager)
         {
             manager->forward_data_speed(data[1]);
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            if (xQueueSendFromISR(queue_speed_sound_handle, &data[1], &xHigherPriorityTaskWoken) == pdPASS)
+            {
+            }
         }
         else
         {
@@ -363,7 +389,7 @@ extern "C" void app_main(void)
     init_sound_spiffs();
     speaker_config();
     queue_sign_data_handle = xQueueCreate(1, sizeof(sign_data_t));
-    queue_sign_display_handle = xQueueCreate(2, sizeof(sign_display_on_watch_t));
+    queue_speed_sound_handle = xQueueCreate(1, sizeof(uint8_t));
 
     BLE_SERVER_INIT();
     ble_callback_register_callback(ble_recv_cb);
@@ -383,6 +409,7 @@ extern "C" void app_main(void)
     manager = new Manager(screen);
     ESP_LOGE(TAG, "\n%s", manager->device_info().c_str());
     lvgl_release();
+    
     manager->create_timer(Manager::update_data_widget_callback, 500, manager); // cập nhật dữ liệu từ BLE vào giao diện widget 0.5s
     manager->create_timer(Manager::update_data_speed_callback, 300, manager);  // cập nhật dữ liệu từ BLE vào giao diện speed  0.3s
 

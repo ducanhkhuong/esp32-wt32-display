@@ -426,6 +426,18 @@ public:
             img2.imgUpdate(scr, "F:/55x55/24.bin", 53, 58, 55, 55);
             break;
 
+        case ID_OTS_NO_LEFT_UTURN_SIGN :
+            // img2.imgUpdate(screen, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/25.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_RIGHT_UTURN_SIGN :
+            // img2.imgUpdate(screen, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/26.bin", 53, 58, 55, 55);
+            break;
+
         case ID_OTS_NO_STRAIGHT_SIGN:
             //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
             img2.imgDelete();
@@ -457,21 +469,21 @@ public:
             break;
 
         case ID_TRAFFIC_CAMERA:
-            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            // img2.imgUpdate(screen, NULL, 53, 58, 55, 55);
             img2.imgDelete();
-            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
-            break;
-
-        case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
-            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
-            img2.imgDelete();
-            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            img2.imgUpdate(scr, "F:/55x55/32.bin", 53, 58, 55, 55);
             break;
 
         case ID_PENALTY_CAMERA:
-            //img2.imgUpdate(scr, NULL, 53, 58, 55, 55);
+            // img2.imgUpdate(screen, NULL, 53, 58, 55, 55);
             img2.imgDelete();
-            img2.imgUpdate(scr, "F:/55x55/camera.bin", 53, 58, 55, 55);
+            img2.imgUpdate(scr, "F:/55x55/33.bin", 53, 58, 55, 55);
+            break;
+
+        case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
+            // img2.imgUpdate(screen, NULL, 53, 58, 55, 55);
+            img2.imgDelete();
+            img2.imgUpdate(scr, "F:/55x55/34.bin", 53, 58, 55, 55);
             break;
 
         default:
@@ -559,6 +571,18 @@ public:
             img3.imgUpdate(scr, "F:/55x55/24.bin", 130, 58, 55, 55);
             break;
 
+	    case ID_OTS_NO_LEFT_UTURN_SIGN :
+            // img3.imgUpdate(screen, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/25.bin", 130, 58, 55, 55);
+            break;
+
+        case ID_OTS_NO_RIGHT_UTURN_SIGN :
+            // img3.imgUpdate(screen, NULL, 130, 58, 55, 55);
+            img3.imgDelete();
+            img3.imgUpdate(scr, "F:/55x55/26.bin", 130, 58, 55, 55);
+            break;
+
         case ID_OTS_NO_STRAIGHT_SIGN:
             //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
             img3.imgDelete();
@@ -590,21 +614,21 @@ public:
             break;
 
         case ID_TRAFFIC_CAMERA:
-            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            // img3.imgUpdate(screen, NULL, 130, 58, 55, 55);
             img3.imgDelete();
-            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            img3.imgUpdate(scr, "F:/55x55/32.bin", 130, 58, 55, 55);
             break;
 
         case ID_PENALTY_CAMERA:
-            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            // img3.imgUpdate(screen, NULL, 130, 58, 55, 55);
             img3.imgDelete();
-            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            img3.imgUpdate(scr, "F:/55x55/33.bin", 130, 58, 55, 55);
             break;
 
         case ID_RED_LIGHT_SURVEILLANCE_CAMERA:
-            //img3.imgUpdate(scr, NULL, 130, 58, 55, 55);
+            // img3.imgUpdate(screen, NULL, 130, 58, 55, 55);
             img3.imgDelete();
-            img3.imgUpdate(scr, "F:/55x55/camera.bin", 130, 58, 55, 55);
+            img3.imgUpdate(scr, "F:/55x55/34.bin", 130, 58, 55, 55);
             break;
 
         default:
@@ -613,7 +637,7 @@ public:
         }
 
         label_distance2.labelUpdate(scr,distance_2,28,115,110,110,lv_color_white(),&lv_font_montserrat_16);
-        label_distance3.labelUpdate(scr,distance_3,110,115,110,110,lv_color_white(),&lv_font_montserrat_16);
+        label_distance3.labelUpdate(scr,distance_3,103,115,110,110,lv_color_white(),&lv_font_montserrat_16);
     }
 
     // handle logic speed
@@ -633,7 +657,6 @@ public:
                 manager->ui_show(lv_scr_act());
             }
         }
-        //delete manager;
     }
 
     //callback data speed
@@ -643,7 +666,6 @@ public:
         {
             manager->speed_show();
         }
-        //delete manager;
     }
 
     // config-timer
