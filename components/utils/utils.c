@@ -3,6 +3,95 @@
 #include "esp_log.h"
 
 #define TAG "Parse BLE data: "
+
+bool sound_id_4 = false;
+bool sound_id_5 = false;
+bool sound_id_6 = false;
+bool sound_id_7 = false;
+bool sound_id_8 = false;
+bool sound_id_9 = false;
+bool sound_id_10 = false;
+bool sound_id_11 = false;
+bool sound_id_12 = false;
+bool sound_id_13 = false;
+bool sound_id_14 = false;
+bool sound_id_15 = false;
+bool sound_id_16 = false;
+bool sound_id_18 = false;
+bool sound_id_32 = false;
+bool sound_id_33 = false;
+bool sound_id_34 = false;
+
+void check_sign_two_position(uint8_t ps2, uint8_t ps3){
+	 if (ps2 != ID_SPEED_LIMIT_40 && ps3 != ID_SPEED_LIMIT_40 && sound_id_4 == true)
+            {
+                sound_id_4 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_50 && ps3 != ID_SPEED_LIMIT_50 && sound_id_5 == true)
+            {
+                sound_id_5 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_60 && ps3 != ID_SPEED_LIMIT_60 && sound_id_6 == true)
+            {
+                sound_id_6 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_70 && ps3 != ID_SPEED_LIMIT_70 && sound_id_7 == true)
+            {
+                sound_id_7 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_80 && ps3 != ID_SPEED_LIMIT_80 && sound_id_8 == true)
+            {
+                sound_id_8 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_90 && ps3 != ID_SPEED_LIMIT_90 && sound_id_9 == true)
+            {
+                sound_id_9 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_100 && ps3 != ID_SPEED_LIMIT_100 && sound_id_10 == true)
+            {
+                sound_id_10 = false;
+            }
+            if (ps2 != ID_SPEED_LIMIT_120 && ps3 != ID_SPEED_LIMIT_120 && sound_id_11 == true)
+            {
+                sound_id_11 = false;
+            }
+             if (ps2 != ID_TS_ENTER_URBAN_AREA && ps3 != ID_TS_ENTER_URBAN_AREA && sound_id_12 == true)
+            {
+                sound_id_12 = false;
+            }
+            if (ps2 != ID_TS_EXIT_URBAN_AREA && ps3 != ID_TS_EXIT_URBAN_AREA && sound_id_13 == true)
+            {
+                sound_id_13 = false;
+            }
+            if (ps2 != ID_TS_NO_OVER_TAKING_ZONE && ps3 != ID_TS_NO_OVER_TAKING_ZONE && sound_id_14 == true)
+            {
+                sound_id_14 = false;
+            }
+            if (ps2 != ID_TS_END_OF_NO_OVER_TAKING_ZONE && ps3 != ID_TS_END_OF_NO_OVER_TAKING_ZONE && sound_id_15 == true)
+            {
+                sound_id_15 = false;
+            }
+            if (ps2 != ID_TS_SLOW_DOWN_ZONE && ps3 != ID_TS_SLOW_DOWN_ZONE && sound_id_16 == true)
+            {
+                sound_id_16 = false;
+            }
+            if (ps2 != ID_TS_TOLL_STATION && ps3 != ID_TS_TOLL_STATION && sound_id_18 == true)
+            {
+                sound_id_18 = false;
+            }
+            if (ps2 != ID_PENALTY_CAMERA && ps3 != ID_PENALTY_CAMERA && sound_id_33 == true)
+            {
+                sound_id_33 = false;
+            }
+            if (ps2 != ID_TRAFFIC_CAMERA && ps3 != ID_TRAFFIC_CAMERA && sound_id_32 == true)
+            {
+                sound_id_32 = false;
+            }
+            if (ps2 != ID_RED_LIGHT_SURVEILLANCE_CAMERA && ps3 != ID_RED_LIGHT_SURVEILLANCE_CAMERA && sound_id_34 == true)
+            {
+                sound_id_34 = false;
+            }
+}
 sign_data_t sign_handle(uint8_t *data, uint16_t len)
 {
 
@@ -17,12 +106,6 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
     {
         ESP_LOGE(TAG, "Received null data");
         return sign_data;
-    }
-
-    ESP_LOGI(TAG, "Data received:");
-    for (uint16_t i = 0; i < len; i++)
-    {
-        ESP_LOGI(TAG, "Byte[%d]: 0x%02X", i, data[i]);
     }
 
     // Parse the data
@@ -41,14 +124,14 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
             memcpy(sign_data.next_speed.unique_id, &data[offset + 1], 3);
             sign_data.next_speed.next_speed = data[offset + 4];
             memcpy(sign_data.next_speed.distance, &data[offset + 5], 2);
-            ESP_LOGI(TAG, "Next Speed Unique ID: 0x%02X%02X%02X",
-                     sign_data.next_speed.unique_id[0],
-                     sign_data.next_speed.unique_id[1],
-                     sign_data.next_speed.unique_id[2]);
-            ESP_LOGI(TAG, "Next Speed: %d, Distance: 0x%02X%02X",
-                     sign_data.next_speed.next_speed,
-                     sign_data.next_speed.distance[0],
-                     sign_data.next_speed.distance[1]);
+            // ESP_LOGI(TAG, "Next Speed Unique ID: 0x%02X%02X%02X",
+            //          sign_data.next_speed.unique_id[0],
+            //          sign_data.next_speed.unique_id[1],
+            //          sign_data.next_speed.unique_id[2]);
+            // ESP_LOGI(TAG, "Next Speed: %d, Distance: 0x%02X%02X",
+            //          sign_data.next_speed.next_speed,
+            //          sign_data.next_speed.distance[0],
+            //          sign_data.next_speed.distance[1]);
             offset += 7;
             break;
 
@@ -56,7 +139,7 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
             sign_data.camera_sign.number_of_sign = data[offset + 1];
             if (sign_data.camera_sign.number_of_sign == 0)
             {
-                ESP_LOGI(TAG, "Dont have camera");
+                // ESP_LOGI(TAG, "Dont have camera");
                 offset += 2;
                 break;
             }
@@ -67,14 +150,14 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
                 sign_data.camera_sign.traffic_id_sign[i] = data[offset + 3];
                 memcpy(sign_data.camera_sign.distance[i], &data[offset + 4], 2);
                 offset += 6;
-                ESP_LOGI(TAG, "Camera Sign[%d]: Unique ID: 0x%02X%02X%02X, Traffic ID: 0x%02X, Distance: 0x%02X%02X",
-                         i + 1,
-                         sign_data.camera_sign.unique_id[i][0],
-                         sign_data.camera_sign.unique_id[i][1],
-                         sign_data.camera_sign.unique_id[i][2],
-                         sign_data.camera_sign.traffic_id_sign[i],
-                         sign_data.camera_sign.distance[i][0],
-                         sign_data.camera_sign.distance[i][1]);
+                // ESP_LOGI(TAG, "Camera Sign[%d]: Unique ID: 0x%02X%02X%02X, Traffic ID: 0x%02X, Distance: 0x%02X%02X",
+                //          i + 1,
+                //          sign_data.camera_sign.unique_id[i][0],
+                //          sign_data.camera_sign.unique_id[i][1],
+                //          sign_data.camera_sign.unique_id[i][2],
+                //          sign_data.camera_sign.traffic_id_sign[i],
+                //          sign_data.camera_sign.distance[i][0],
+                //          sign_data.camera_sign.distance[i][1]);
             }
             break;
 
@@ -82,7 +165,7 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
             sign_data.traffic_sign.number_of_sign = data[offset + 1];
             if (sign_data.traffic_sign.number_of_sign == 0)
             {
-                ESP_LOGI(TAG, "Don't have traffic sign");
+                // ESP_LOGI(TAG, "Don't have traffic sign");
                 offset += 2;
                 break;
             }
@@ -96,14 +179,14 @@ sign_data_t sign_handle(uint8_t *data, uint16_t len)
                     memcpy(sign_data.traffic_sign.distance[i], &data[offset + 4], 2);
                     offset += 6;
 
-                    ESP_LOGI(TAG, "Traffic Sign[%d]: Unique ID: 0x%02X%02X%02X, Traffic ID: 0x%02X, Distance: 0x%02X%02X",
-                             i + 1,
-                             sign_data.traffic_sign.unique_id[i][0],
-                             sign_data.traffic_sign.unique_id[i][1],
-                             sign_data.traffic_sign.unique_id[i][2],
-                             sign_data.traffic_sign.traffic_id_sign[i],
-                             sign_data.traffic_sign.distance[i][0],
-                             sign_data.traffic_sign.distance[i][1]);
+                    // ESP_LOGI(TAG, "Traffic Sign[%d]: Unique ID: 0x%02X%02X%02X, Traffic ID: 0x%02X, Distance: 0x%02X%02X",
+                    //          i + 1,
+                    //          sign_data.traffic_sign.unique_id[i][0],
+                    //          sign_data.traffic_sign.unique_id[i][1],
+                    //          sign_data.traffic_sign.unique_id[i][2],
+                    //          sign_data.traffic_sign.traffic_id_sign[i],
+                    //          sign_data.traffic_sign.distance[i][0],
+                    //          sign_data.traffic_sign.distance[i][1]);
                 }
             }
             break;

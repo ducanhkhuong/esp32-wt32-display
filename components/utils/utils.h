@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include <string.h>
+#include "stdbool.h"
 
 #define PRIORITY_1 1
 #define PRIORITY_2 2
@@ -39,7 +40,7 @@
 #define ID_OTS_NO_RIGHT_TURN_SIGN 0x16
 #define ID_OTS_NO_LEFT_TURN_AND_UTURN_SIGN 0x17
 #define ID_OTS_NO_RIGHT_TURN_AND_UTURN_SIGN 0x18
-#define ID_OTS_NO_STRAIGHT_SIGN 0x1B 
+#define ID_OTS_NO_STRAIGHT_SIGN 0x1B
 #define ID_OTS_NO_PARKING_SIGN 0x1C
 #define ID_OTS_NO_STOP_AND_PARKING_SIGN 0x1D
 #define ID_OTS_NO_PARKING_ON_ODD_DAYS_SIGN 0x1E
@@ -51,6 +52,24 @@
 
 #define CENSOR_BEEP 0x100
 #define OVER_LMIT_SPEED 0x101
+
+extern bool sound_id_4;
+extern bool sound_id_5;
+extern bool sound_id_6;
+extern bool sound_id_7;
+extern bool sound_id_8;
+extern bool sound_id_9;
+extern bool sound_id_10;
+extern bool sound_id_11;
+extern bool sound_id_12;
+extern bool sound_id_13;
+extern bool sound_id_14;
+extern bool sound_id_15;
+extern bool sound_id_16;
+extern bool sound_id_18;
+extern bool sound_id_32;
+extern bool sound_id_33;
+extern bool sound_id_34;
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
 
@@ -117,6 +136,6 @@ typedef struct
 
 sign_data_t sign_handle(uint8_t *data, uint16_t len);
 sign_display_on_watch_t get_sign_display_on_watch(sign_data_t sign_data);
+void check_sign_two_position(uint8_t ps2, uint8_t ps3);
 
 #endif
-

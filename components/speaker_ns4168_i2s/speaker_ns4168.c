@@ -46,7 +46,7 @@ static esp_err_t bsp_i2s_write(void *audio_buffer, size_t len, size_t *bytes_wri
     // Giảm âm lượng
     int16_t *pcm_buffer = (int16_t *)audio_buffer; // Giả sử dữ liệu là PCM 16-bit
     size_t sample_count = len / sizeof(int16_t);
-    const float volume_scale = 0.2; // Giảm âm lượng xuống 50%
+    const float volume_scale = 0.1; // Giảm âm lượng xuống 50%
 
     for (size_t i = 0; i < sample_count; i++)
     {
@@ -83,7 +83,7 @@ static esp_err_t bsp_audio_init(const i2s_std_config_t *i2s_config, i2s_chan_han
     /* Setup I2S peripheral */
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(CONFIG_BSP_I2S_NUM, I2S_ROLE_MASTER);
     chan_cfg.auto_clear = false; // Auto clear the legacy data in the DMA buffer
-    chan_cfg.dma_frame_num = 512;
+    chan_cfg.dma_frame_num = 1023;
     ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, tx_channel, rx_channel));
 
     /* Setup I2S channels */
